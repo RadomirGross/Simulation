@@ -14,9 +14,13 @@ public class Main {
 
             gameMap.fillGameMap();
             gameMap.renderGameMap();
-         gameMap.getGameMap().put(new Coordinate(4,4),new Rabbit());
+            Rabbit rabbit=new Rabbit();
+         gameMap.getGameMap().put(new Coordinate(4,4),rabbit);
          gameMap.getGameMap().put(new Coordinate(6,4),new Grass());
+
         gameMap.renderGameMap();
+
+        rabbit.makeMove(gameMap, 4,4);
 
     }
 }

@@ -4,24 +4,30 @@ import com.gross.simulation.map.GameMap;
 
 public class Simulation {
 
-    private GameMap gameMap =new GameMap(10,10);
-    private int counter=0;
+    private GameMap gameMap = new GameMap(10, 10);
+    private int counter = 0;
 
-    public void render()
-    {
+    public int getCounter() {
+        return counter;
+    }
 
+    public void setCounter(int counter) {
+        this.counter = counter;
+    }
 
-        }
-
-
-    public void initActions()
-    {
+    public void render() {
 
 
     }
 
-    public void turnActions()
-    {}
+
+    public void initActions() {
+
+
+    }
+
+    public void turnActions() {
+    }
 
 //////////////////
 }

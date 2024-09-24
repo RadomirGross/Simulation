@@ -8,55 +8,55 @@ import java.awt.*;
 import java.util.HashMap;
 import java.util.Map;
 
-public class GameMap {
+    public class GameMap {
 
-    private Map<Coordinate, Entity> gameMap;
-    private int width;
-    private int height;
+        private Map<Coordinate, Entity> gameMap;
+        private int width;
+        private int height;
 
-    public GameMap(int width, int height) {
-        this.width = width;
-        this.height = height;
-        gameMap = new HashMap<>(width * height);
-    }
+        public GameMap(int width, int height) {
+            this.width = width;
+            this.height = height;
+            gameMap = new HashMap<>(width * height);
+        }
 
-    public Map<Coordinate, Entity> getGameMap() {
-        return gameMap;
-    }
+        public Map<Coordinate, Entity> getGameMap() {
+            return gameMap;
+        }
 
-    public void setGameMap(Map<Coordinate, Entity> gameMap) {
-        this.gameMap = gameMap;
-    }
+        public void setGameMap(Map<Coordinate, Entity> gameMap) {
+            this.gameMap = gameMap;
+        }
 
-    public int getWidth() {
-        return width;
-    }
+        public int getWidth() {
+            return width;
+        }
 
-    public void setWidth(int width) {
-        this.width = width;
-    }
+        public void setWidth(int width) {
+            this.width = width;
+        }
 
-    public int getHeight() {
-        return height;
-    }
+        public int getHeight() {
+            return height;
+        }
 
-    public void setHeight(int height) {
-        this.height = height;
-    }
+        public void setHeight(int height) {
+            this.height = height;
+        }
 
-    public void fillGameMap() {
-        for (int y = 0; y < height; y++)
-            for (int x = 0; x < width; x++)
-                this.gameMap.put(new Coordinate(x, y), new Empty());
-    }
+        public void fillGameMap() {
+            for (int y = 0; y < height; y++)
+                for (int x = 0; x < width; x++)
+                    this.gameMap.put(new Coordinate(x, y), new Empty());
+        }
 
-    public void renderGameMap() {
-        for (int y = 0; y < height; y++) {
-            for (int x = 0; x < width; x++) {
-                System.out.print(gameMap.get(new Coordinate(x, y)).getIcon() + " ");
+        public void renderGameMap() {
+            for (int y = 0; y < height; y++) {
+                for (int x = 0; x < width; x++) {
+                    System.out.print(gameMap.get(new Coordinate(x, y)).getIcon() + " ");
+                }
+                System.out.println();
             }
             System.out.println();
         }
-        System.out.println();
     }
-}

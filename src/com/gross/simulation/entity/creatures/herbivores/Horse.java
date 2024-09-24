@@ -2,6 +2,7 @@ package com.gross.simulation.entity.creatures.herbivores;
 
 import com.gross.simulation.entity.creatures.Creature;
 import com.gross.simulation.enums.HerbivoreType;
+import com.gross.simulation.map.GameMap;
 
 public class Horse extends Herbivore {
     private final String icon="🐴";
@@ -15,7 +16,7 @@ public class Horse extends Herbivore {
     }
 
     @Override
-    public void makeMove() {
+    public void makeMove(GameMap gameMap,int x,int y) {
 
     }
 }
