@@ -40,4 +40,12 @@ public class Coordinate {
         result = 31 * result + y;
         return result;
     }
+
+    @Override
+    public String toString() {
+        return "Coordinate{" +
+                "x=" + x +
+                ", y=" + y +
+                '}';
+    }
 }

@@ -1,14 +1,13 @@
 package com.gross.simulation.entity.creatures.herbivores;
 
 import com.gross.simulation.entity.Coordinate;
+import com.gross.simulation.entity.Entity;
+import com.gross.simulation.entity.staticEntity.Empty;
 import com.gross.simulation.entity.staticEntity.Grass;
-import com.gross.simulation.entity.staticEntity.Rock;
-import com.gross.simulation.entity.staticEntity.StaticEntity;
-import com.gross.simulation.entity.staticEntity.Tree;
 import com.gross.simulation.map.GameMap;
 
-import java.util.LinkedList;
-import java.util.Queue;
+import java.util.Random;
+
 
 public class Rabbit extends Herbivore {
     private final String icon = "🐰";
@@ -20,72 +19,33 @@ public class Rabbit extends Herbivore {
     }
 
     @Override
-    public void makeMove(GameMap gameMap, int startX,int StartY) {
-        int[][] intMap = new int[gameMap.getWidth()][gameMap.getHeight()];
-        for (int y = 0; y < gameMap.getWidth(); y++) {
-            for (int x = 0; x < gameMap.getHeight(); x++) {
-                if (gameMap.getGameMap().get(new Coordinate(x, y)) == this)
-                    intMap[y][x] = 0;
-                else if (gameMap.getGameMap().get(new Coordinate(x, y)) instanceof Grass)
-                    intMap[y][x] = -2;
-                else if (gameMap.getGameMap().get(new Coordinate(x, y)) instanceof Tree)
-                    intMap[y][x] = -3;
-                else  intMap[y][x] = -4;
+    public void makeMove(GameMap gameMap, int startX, int startY) {
+        int[][] BFSGrid = buildBFSGrid(gameMap);
 
-
-            }
-        }
-
-      printMap(intMap);
-  calculateDistance(intMap);
-printMap(intMap);
-
-    }
-
-    public void calculateDistance (int [][] intMap)
-    {
-int width = intMap.length;
-int height = intMap[0].length;
-
-
-        Queue<Coordinate> queue = new LinkedList<>();
-
-        for (int y = 0; y < height; y++) {
-            for (int x = 0; x < width; x++) {
-                if (intMap[y][x] == 0)
-                    queue.add(new Coordinate(x, y));
-            }
-        }
-
-        int [][] directions= {{0,1},{0,-1},{1,0},{-1,0}};
-
-        while (!queue.isEmpty()) {
-            Coordinate current = queue.poll();
-
-            int x=current.getX();
-            int y=current.getY();
-            int currentDistance = intMap[y][x];
-
-            for (int[] direction : directions) {
-                int newX = x + direction[0];
-                int newY = y + direction[1];
-
-
-                if (newX >=0 && newX < width && newY >=0 && newY < height)
-                {
-                    if (intMap[newY][newX] == -4)
-                    { intMap[newY][newX]=currentDistance+1;
-                    queue.add(new Coordinate(newX, newY));}
+//        printMap(BFSGrid);
+        calculateDistance(BFSGrid);
+//        printMap(BFSGrid);
+        Coordinate closestGrass = findClosestGrass(BFSGrid);
+        if (isGrassNearby(closestGrass, new Coordinate(startX, startY))) {
+            Entity entity = gameMap.getGameMap().get(closestGrass);
+            Grass grass = (Grass) entity;
+            grass.setHealth(grass.getHealth() - 5);
+            if (grass.getHealth() <= 0) {
+                gameMap.getGameMap().put(closestGrass, new Empty());
+                BFSGrid[closestGrass.getY()][closestGrass.getX()] = -4;
+                if (findClosestGrass(BFSGrid) == null) {
+                    Coordinate newGrass = addRandomGrass(gameMap);
+                    BFSGrid[newGrass.getY()][newGrass.getX()] = -4;
                 }
             }
+        } else {
+            Coordinate[] wayToGrass = findWayToGrass(BFSGrid, findClosestGrass(BFSGrid));
+            moveHerbivore(gameMap, wayToGrass, startX, startY, speed);
         }
-
     }
 
 
-
-    public void printMap(int [][] gameMap)
-    {
+    public void printMap(int[][] gameMap) {
         for (int y = 0; y < gameMap.length; y++) {
             for (int x = 0; x < gameMap[0].length; x++) {
                 System.out.print(gameMap[y][x] + " ");
