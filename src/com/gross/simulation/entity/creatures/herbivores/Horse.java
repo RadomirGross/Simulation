@@ -1,7 +1,4 @@
 package com.gross.simulation.entity.creatures.herbivores;
-
-import com.gross.simulation.entity.creatures.Creature;
-import com.gross.simulation.enums.HerbivoreType;
 import com.gross.simulation.map.GameMap;
 
 public class Horse extends Herbivore {
@@ -10,13 +7,10 @@ public class Horse extends Herbivore {
         return icon;
     }
     public Horse() {
-        setType(HerbivoreType.HORSE);
-        setSpeed(10);
-        setHealth(100);
+
+     super(100,5);
     }
 
-    @Override
-    public void makeMove(GameMap gameMap,int x,int y) {
 
-    }
+
 }

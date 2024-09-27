@@ -2,6 +2,8 @@ package com.gross.simulation;
 
 import com.gross.simulation.entity.Coordinate;
 import com.gross.simulation.entity.Entity;
+import com.gross.simulation.entity.creatures.herbivores.Cow;
+import com.gross.simulation.entity.creatures.herbivores.Horse;
 import com.gross.simulation.entity.creatures.herbivores.Rabbit;
 import com.gross.simulation.entity.staticEntity.Grass;
 import com.gross.simulation.entity.staticEntity.Rock;
@@ -20,6 +22,8 @@ public class Main {
             gameMap.renderGameMap();
             Rabbit rabbit=new Rabbit();
          gameMap.getGameMap().put(new Coordinate(4,4),rabbit);
+        gameMap.getGameMap().put(new Coordinate(1,1),new Horse());
+        gameMap.getGameMap().put(new Coordinate(0,9),new Cow());
          gameMap.getGameMap().put(new Coordinate(6,4),new Grass());
         gameMap.getGameMap().put(new Coordinate(9,9),new Grass());
         gameMap.getGameMap().put(new Coordinate(6,9),new Tree());

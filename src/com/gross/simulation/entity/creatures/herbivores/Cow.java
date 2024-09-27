@@ -1,7 +1,5 @@
 package com.gross.simulation.entity.creatures.herbivores;
 
-import com.gross.simulation.enums.HerbivoreType;
-import com.gross.simulation.map.GameMap;
 
 public class Cow extends Herbivore {
     private final String icon="🐮";
@@ -13,12 +11,9 @@ public class Cow extends Herbivore {
     }
 
     public Cow() {
-       setSpeed(1);
-       setHealth(100);
-       setType(HerbivoreType.COW);
+     super(100,1);
+
     }
 
-    @Override
-    public void makeMove(GameMap gameMap, int x, int y) {
-    }
+
 }

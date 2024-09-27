@@ -4,6 +4,7 @@ import com.gross.simulation.entity.Coordinate;
 import com.gross.simulation.entity.Entity;
 import com.gross.simulation.entity.staticEntity.Grass;
 import com.gross.simulation.entity.staticEntity.Rock;
+import com.gross.simulation.entity.staticEntity.StaticEntity;
 import com.gross.simulation.entity.staticEntity.Tree;
 import com.gross.simulation.map.GameMap;
 
@@ -14,7 +15,11 @@ public abstract class Creature extends Entity {
     public int health;
     public int speed;
 
-
+public Creature(int health, int speed)
+{
+    this.health = health;
+    this.speed = speed;
+}
     public abstract void makeMove(GameMap gameMap,int startX,int startY);
 
     public int getHealth() {
@@ -41,10 +46,10 @@ public abstract class Creature extends Entity {
                     intMap[y][x] = 0;
                 else if (gameMap.getGameMap().get(new Coordinate(x, y)) instanceof Grass)
                     intMap[y][x] = -2;
-                else if (gameMap.getGameMap().get(new Coordinate(x, y)) instanceof Tree)
+                else if (gameMap.getGameMap().get(new Coordinate(x, y)) instanceof StaticEntity)
                     intMap[y][x] = -3;
-                else if (gameMap.getGameMap().get(new Coordinate(x, y)) instanceof Rock)
-                    intMap[y][x] = -3;
+                else if (gameMap.getGameMap().get(new Coordinate(x, y)) instanceof Creature)
+                    intMap[y][x] = -1;
                 else intMap[y][x] = -4;
             }
         }

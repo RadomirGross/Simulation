@@ -27,7 +27,7 @@ public class GameMap {
 public void nextTurn (){
     Set<Entity> movedEntity=new HashSet<>();
         for (Map.Entry<Coordinate,Entity> arg : this.gameMap.entrySet()) {
-        if (arg.getValue() instanceof Creature && !movedEntity.contains(arg.getValue())) {
+        if (arg.getValue() instanceof Herbivore && !movedEntity.contains(arg.getValue())) {
             Creature x = (Creature) arg.getValue();
             movedEntity.add(arg.getValue());
             x.makeMove( this, arg.getKey().getX(), arg.getKey().getY());
