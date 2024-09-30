@@ -5,7 +5,6 @@ import com.gross.simulation.entity.Entity;
 import com.gross.simulation.entity.creatures.Creature;
 import com.gross.simulation.entity.staticEntity.Empty;
 import com.gross.simulation.entity.staticEntity.Grass;
-import com.gross.simulation.enums.HerbivoreType;
 import com.gross.simulation.map.GameMap;
 
 import java.util.LinkedList;
@@ -19,16 +18,16 @@ public abstract class Herbivore extends Creature {
 
     public void makeMove(GameMap gameMap, int startX, int startY) {
         Coordinate startPosition = new Coordinate(startX, startY);
-       // System.out.println(gameMap.getGameMap().get(startPosition).getClass());
+        // System.out.println(gameMap.getGameMap().get(startPosition).getClass());
         int[][] BFSGrid = buildBFSGrid(gameMap);
-       // printMap(BFSGrid);
+        // printMap(BFSGrid);
         calculateDistance(BFSGrid);
-       // printMap(BFSGrid);
+        // printMap(BFSGrid);
         Coordinate closestGrass = findClosestGrass(BFSGrid);
-       // Grass grass=((Grass)gameMap.getGameMap().get(closestGrass));
-       // if (grass!=null)
-       // System.out.println(grass.getHealth());
-      //  else System.out.println("grass=null");
+        // Grass grass=((Grass)gameMap.getGameMap().get(closestGrass));
+        // if (grass!=null)
+        // System.out.println(grass.getHealth());
+        //  else System.out.println("grass=null");
         if (isGrassNearby(closestGrass, startPosition))
             reduceGrassHealthRemoveIfDepletedAndAddNewGrassIfNoneLeft(gameMap, BFSGrid, closestGrass);
         else {
@@ -90,24 +89,6 @@ public abstract class Herbivore extends Creature {
         return result;
     }
 
-
-    public Coordinate findMinimumNeighborValue(int[][] intMap, Coordinate grass) {
-        int[][] directions = {{1, 0}, {-1, 0}, {0, 1}, {0, -1}};
-        int minValue = Integer.MAX_VALUE;
-        int width = intMap.length;
-        int height = intMap[0].length;
-        Coordinate result = null;
-        for (int[] direction : directions) {
-            int newX = grass.getX() + direction[1];
-            int newY = grass.getY() + direction[0];
-            if (newX >= 0 && newX < width && newY >= 0 && newY < height)
-                if (intMap[newY][newX] < minValue && intMap[newY][newX] >= 0) {
-                    minValue = intMap[newY][newX];
-                    result = new Coordinate(newX, newY);
-                }
-        }
-        return result;
-    }
 
     public Boolean isGrassNearby(Coordinate grass, Coordinate creature) {
         if (grass == null)

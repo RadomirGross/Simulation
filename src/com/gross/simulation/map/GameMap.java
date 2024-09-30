@@ -24,16 +24,9 @@ public class GameMap {
             this.height = height;
             gameMap = new HashMap<>(width * height);
         }
-public void nextTurn (){
-    Set<Entity> movedEntity=new HashSet<>();
-        for (Map.Entry<Coordinate,Entity> arg : this.gameMap.entrySet()) {
-        if (arg.getValue() instanceof Herbivore && !movedEntity.contains(arg.getValue())) {
-            Creature x = (Creature) arg.getValue();
-            movedEntity.add(arg.getValue());
-            x.makeMove( this, arg.getKey().getX(), arg.getKey().getY());
 
-        }
-    }}
+
+
 
         public Map<Coordinate, Entity> getGameMap() {
             return gameMap;
@@ -59,19 +52,11 @@ public void nextTurn (){
             this.height = height;
         }
 
-        public void fillGameMap() {
+        /*public void fillGameMap() {
             for (int y = 0; y < height; y++)
                 for (int x = 0; x < width; x++)
                     this.gameMap.put(new Coordinate(x, y), new Empty());
-        }
+        }*/
 
-        public void renderGameMap() {
-            for (int y = 0; y < height; y++) {
-                for (int x = 0; x < width; x++) {
-                    System.out.print(gameMap.get(new Coordinate(x, y)).getIcon() + " ");
-                }
-                System.out.println();
-            }
-            System.out.println();
-        }
+
     }

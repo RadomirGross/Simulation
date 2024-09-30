@@ -2,6 +2,8 @@ package com.gross.simulation.entity.creatures;
 
 import com.gross.simulation.entity.Coordinate;
 import com.gross.simulation.entity.Entity;
+import com.gross.simulation.entity.creatures.herbivores.Herbivore;
+import com.gross.simulation.entity.creatures.predators.Predator;
 import com.gross.simulation.entity.staticEntity.Grass;
 import com.gross.simulation.entity.staticEntity.Rock;
 import com.gross.simulation.entity.staticEntity.StaticEntity;
@@ -14,11 +16,18 @@ import java.util.Queue;
 public abstract class Creature extends Entity {
     public int health;
     public int speed;
-
+    public int power;
 public Creature(int health, int speed)
 {
     this.health = health;
     this.speed = speed;
+}
+
+public Creature(int health,int speed, int power)
+{
+    this.health = health;
+    this.speed = speed;
+    this.power = power;
 }
     public abstract void makeMove(GameMap gameMap,int startX,int startY);
 
@@ -48,8 +57,10 @@ public Creature(int health, int speed)
                     intMap[y][x] = -2;
                 else if (gameMap.getGameMap().get(new Coordinate(x, y)) instanceof StaticEntity)
                     intMap[y][x] = -3;
-                else if (gameMap.getGameMap().get(new Coordinate(x, y)) instanceof Creature)
+                else if (gameMap.getGameMap().get(new Coordinate(x, y)) instanceof Herbivore)
                     intMap[y][x] = -1;
+                else if (gameMap.getGameMap().get(new Coordinate(x, y)) instanceof Predator)
+                    intMap[y][x] = -5;
                 else intMap[y][x] = -4;
             }
         }
@@ -92,5 +103,22 @@ public Creature(int health, int speed)
             }
         }
 
+    }
+    public Coordinate findMinimumNeighborValue(int[][] intMap, Coordinate grass) {
+        int[][] directions = {{1, 0}, {-1, 0}, {0, 1}, {0, -1}};
+        int minValue = Integer.MAX_VALUE;
+        int width = intMap.length;
+        int height = intMap[0].length;
+        Coordinate result = null;
+        for (int[] direction : directions) {
+            int newX = grass.getX() + direction[1];
+            int newY = grass.getY() + direction[0];
+            if (newX >= 0 && newX < width && newY >= 0 && newY < height)
+                if (intMap[newY][newX] < minValue && intMap[newY][newX] >= 0) {
+                    minValue = intMap[newY][newX];
+                    result = new Coordinate(newX, newY);
+                }
+        }
+        return result;
     }
 }
