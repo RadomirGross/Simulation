@@ -3,16 +3,12 @@ package com.gross.simulation.entity.creatures.predators;
 import com.gross.simulation.entity.Coordinate;
 import com.gross.simulation.entity.Entity;
 import com.gross.simulation.entity.creatures.Creature;
-import com.gross.simulation.entity.creatures.herbivores.Cow;
 import com.gross.simulation.entity.creatures.herbivores.Herbivore;
-import com.gross.simulation.entity.creatures.herbivores.Horse;
-import com.gross.simulation.entity.creatures.herbivores.Rabbit;
-import com.gross.simulation.entity.staticEntity.Empty;
 import com.gross.simulation.map.GameMap;
 
 import java.util.LinkedList;
 import java.util.Queue;
-import java.util.Random;
+
 
 public abstract class Predator extends Creature {
     public Predator(int health,int speed,int power)
@@ -55,8 +51,8 @@ public abstract class Predator extends Creature {
             return;
         if (wayToGrass.length - 1 < speed)
             speed = wayToGrass.length - 1;
-        gameMap.getGameMap().put(new Coordinate(startX, startY), new Empty());
-        gameMap.getGameMap().put(wayToGrass[speed], this);
+        gameMap.deleteEntity(new Coordinate(startX, startY));
+        gameMap.putEntity(wayToGrass[speed], this);
     }
 
     public Coordinate[] findWayToHerbivore(int[][] intMap, Coordinate herbivore) {
@@ -104,43 +100,18 @@ public abstract class Predator extends Creature {
 
     }
 
-    public Coordinate addRandomHerbivore(GameMap gameMap) {
-        boolean added = false;
-        Random random = new Random();
-        Coordinate randomCoordinate = null;
-        while (!added) {
-            int randomX = random.nextInt(gameMap.getWidth());
-            int randomY = random.nextInt(gameMap.getHeight());
-            randomCoordinate = new Coordinate(randomX, randomY);
-            if (gameMap.getGameMap().get(randomCoordinate) instanceof Empty) {
-                gameMap.getGameMap().put(randomCoordinate, createRandomHerbivore());
-                added = true;
-            }
-        }
-        return randomCoordinate;
-    }
 
-public Herbivore createRandomHerbivore()
-{
-    Random random = new Random();
-    int type = random.nextInt(3);
-    if (type==0)
-        return new Rabbit();
-    if (type==1)
-        return new Cow();
-    return new Horse();
-}
     public void reduceHerbivoreHealthRemoveIfDepletedAndAddNewHerbivoreIfNoneLeft(GameMap gameMap, int[][] BFSGrid, Coordinate closestHerbivore) {
-        Entity entity = gameMap.getGameMap().get(closestHerbivore);
+        Entity entity = gameMap.getEntity(closestHerbivore);
         Herbivore herbivore = (Herbivore) entity;
         int power =this.power;
         herbivore.setHealth(herbivore.getHealth() - power);
         if (herbivore.getHealth() <= 0) {
-            gameMap.getGameMap().put(closestHerbivore, new Empty());
             BFSGrid[closestHerbivore.getY()][closestHerbivore.getX()] = -4;
+            gameMap.deleteEntity(closestHerbivore);
             if (findClosestHerbivore(BFSGrid) == null) {
-                Coordinate newHerbivore = addRandomHerbivore(gameMap);
-                BFSGrid[newHerbivore.getY()][newHerbivore.getX()] = -4;
+                Coordinate coordinate=gameMap.addEntityOnRandomCell(gameMap, gameMap.createRandomHerbivore());
+                BFSGrid[coordinate.getY()][coordinate.getX()] = -4;
             }
         }
 

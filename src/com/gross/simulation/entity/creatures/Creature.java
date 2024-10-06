@@ -5,9 +5,7 @@ import com.gross.simulation.entity.Entity;
 import com.gross.simulation.entity.creatures.herbivores.Herbivore;
 import com.gross.simulation.entity.creatures.predators.Predator;
 import com.gross.simulation.entity.staticEntity.Grass;
-import com.gross.simulation.entity.staticEntity.Rock;
 import com.gross.simulation.entity.staticEntity.StaticEntity;
-import com.gross.simulation.entity.staticEntity.Tree;
 import com.gross.simulation.map.GameMap;
 
 import java.util.LinkedList;
@@ -51,15 +49,15 @@ public Creature(int health,int speed, int power)
         int[][] intMap = new int[gameMap.getWidth()][gameMap.getHeight()];
         for (int y = 0; y < gameMap.getWidth(); y++) {
             for (int x = 0; x < gameMap.getHeight(); x++) {
-                if (gameMap.getGameMap().get(new Coordinate(x, y)) == this)
+                if (gameMap.getEntity(new Coordinate(x, y)) == this)
                     intMap[y][x] = 0;
-                else if (gameMap.getGameMap().get(new Coordinate(x, y)) instanceof Grass)
+                else if (gameMap.getEntity(new Coordinate(x, y)) instanceof Grass)
                     intMap[y][x] = -2;
-                else if (gameMap.getGameMap().get(new Coordinate(x, y)) instanceof StaticEntity)
+                else if (gameMap.getEntity(new Coordinate(x, y)) instanceof StaticEntity)
                     intMap[y][x] = -3;
-                else if (gameMap.getGameMap().get(new Coordinate(x, y)) instanceof Herbivore)
+                else if (gameMap.getEntity(new Coordinate(x, y)) instanceof Herbivore)
                     intMap[y][x] = -1;
-                else if (gameMap.getGameMap().get(new Coordinate(x, y)) instanceof Predator)
+                else if (gameMap.getEntity(new Coordinate(x, y)) instanceof Predator)
                     intMap[y][x] = -5;
                 else intMap[y][x] = -4;
             }
@@ -111,8 +109,8 @@ public Creature(int health,int speed, int power)
         int height = intMap[0].length;
         Coordinate result = null;
         for (int[] direction : directions) {
-            int newX = grass.getX() + direction[1];
-            int newY = grass.getY() + direction[0];
+            int newX = grass.getX() + direction[0];
+            int newY = grass.getY() + direction[1];
             if (newX >= 0 && newX < width && newY >= 0 && newY < height)
                 if (intMap[newY][newX] < minValue && intMap[newY][newX] >= 0) {
                     minValue = intMap[newY][newX];

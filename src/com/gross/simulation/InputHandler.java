@@ -23,7 +23,7 @@ import java.util.Scanner;
                     case "q":
                         System.out.println("Завершение работы программы");
                         running[0] = false;
-                        break;
+                    break;
                     case " ":
                         pause[0] = !pause[0];
                         if (pause[0]) {
@@ -31,7 +31,7 @@ import java.util.Scanner;
                         } else {
                             System.out.println("Симуляция возобновлена...");
                         }
-                        break;
+
                 }
             }
             scanner.close();

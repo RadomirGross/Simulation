@@ -2,61 +2,120 @@ package com.gross.simulation.map;
 
 import com.gross.simulation.entity.Coordinate;
 import com.gross.simulation.entity.Entity;
-import com.gross.simulation.entity.creatures.Creature;
+import com.gross.simulation.entity.creatures.herbivores.Cow;
 import com.gross.simulation.entity.creatures.herbivores.Herbivore;
+import com.gross.simulation.entity.creatures.herbivores.Horse;
 import com.gross.simulation.entity.creatures.herbivores.Rabbit;
-import com.gross.simulation.entity.staticEntity.Empty;
+import com.gross.simulation.entity.creatures.predators.Bear;
+import com.gross.simulation.entity.creatures.predators.Lion;
+import com.gross.simulation.entity.creatures.predators.Predator;
+import com.gross.simulation.entity.creatures.predators.Wolf;
+import com.gross.simulation.entity.staticEntity.*;
 
-import java.awt.*;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 public class GameMap {
 
-        private Map<Coordinate, Entity> gameMap;
-        private int width;
-        private int height;
+    private final Map<Coordinate, Entity> gameMap;
+    private final int width;
+    private final int height;
 
-        public GameMap(int width, int height) {
-            this.width = width;
-            this.height = height;
-            gameMap = new HashMap<>(width * height);
+    public GameMap(int width, int height) {
+        this.width = width;
+        this.height = height;
+        gameMap = new HashMap<>(width * height);
+    }
+
+    public Coordinate addEntityOnRandomCell(GameMap gameMap, Entity entity) {
+        boolean added = false;
+        Coordinate randomCoordinate = null;
+        while (!added) {
+            Random random = new Random();
+            int randomX = random.nextInt(gameMap.getWidth());
+            int randomY = random.nextInt(gameMap.getHeight());
+            randomCoordinate = new Coordinate(randomX, randomY);
+            if (!gameMap.hasEntityAt(randomCoordinate)) {
+                gameMap.putEntity(randomCoordinate, entity);
+                added = true;
+            }
         }
+        return randomCoordinate;
+    }
 
-
-
-
-        public Map<Coordinate, Entity> getGameMap() {
-            return gameMap;
-        }
-
-        public void setGameMap(Map<Coordinate, Entity> gameMap) {
-            this.gameMap = gameMap;
-        }
-
-        public int getWidth() {
-            return width;
-        }
-
-        public void setWidth(int width) {
-            this.width = width;
-        }
-
-        public int getHeight() {
-            return height;
-        }
-
-        public void setHeight(int height) {
-            this.height = height;
-        }
-
-        /*public void fillGameMap() {
-            for (int y = 0; y < height; y++)
-                for (int x = 0; x < width; x++)
-                    this.gameMap.put(new Coordinate(x, y), new Empty());
-        }*/
-
+    public Predator createRandomPredator() {
+        Random random = new Random();
+        int type = random.nextInt(3);
+        if (type == 0)
+            return new Wolf();
+        else if (type == 1)
+            return new Bear();
+        else
+            return new Lion();
+    }
+    public Herbivore createRandomHerbivore()
+    {
+        Random random = new Random();
+        int type = random.nextInt(3);
+        if (type==0)
+            return new Rabbit();
+        if (type==1)
+            return new Cow();
+        return new Horse();
+    }
+    public StaticEntity createRandomStaticEntity()
+    {
+        Random random = new Random();
+        int type = random.nextInt(2);
+        if (type==0)
+            return new Rock();
+        else
+            return new Tree();
 
     }
+    public void deleteEntity(Coordinate coordinate) {
+        gameMap.remove(coordinate);
+    }
+
+    public Entity getEntity(Coordinate coordinate) {
+        return gameMap.get(coordinate);
+    }
+
+    public void putEntity(Coordinate coordinate, Entity entity) {
+        gameMap.put(coordinate, entity);
+    }
+
+    public Set<Map.Entry<Coordinate, Entity>> getAllKeysAndValues() {
+        return gameMap.entrySet();
+    }
+
+    public Set<Entity> getAllEntities() {
+        return new HashSet<>(gameMap.values());
+    }
+
+    public Set<Coordinate> getAllKeys() {
+        return gameMap.keySet();
+    }
+
+    public boolean hasEntityAt(Coordinate coordinate) {
+        Entity entity = gameMap.get(coordinate);
+        return entity != null && !(entity instanceof Empty);
+    }
+
+    public int getWidth() {
+        return width;
+    }
+
+
+    public int getHeight() {
+        return height;
+    }
+
+    public int checkNumberOfEntities(Class<? extends Entity> entityClass)
+    {
+      Set<Entity> entities= getAllEntities();
+        long count = entities.stream()
+                .filter(entity -> entityClass.isInstance(entity))
+                .count();
+        return Integer.parseInt(String.valueOf(count));
+    }
+}

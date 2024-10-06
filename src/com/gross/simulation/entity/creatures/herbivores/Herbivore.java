@@ -9,7 +9,6 @@ import com.gross.simulation.map.GameMap;
 
 import java.util.LinkedList;
 import java.util.Queue;
-import java.util.Random;
 
 public abstract class Herbivore extends Creature {
     public Herbivore(int health, int speed) {
@@ -18,16 +17,9 @@ public abstract class Herbivore extends Creature {
 
     public void makeMove(GameMap gameMap, int startX, int startY) {
         Coordinate startPosition = new Coordinate(startX, startY);
-        // System.out.println(gameMap.getGameMap().get(startPosition).getClass());
         int[][] BFSGrid = buildBFSGrid(gameMap);
-        // printMap(BFSGrid);
         calculateDistance(BFSGrid);
-        // printMap(BFSGrid);
         Coordinate closestGrass = findClosestGrass(BFSGrid);
-        // Grass grass=((Grass)gameMap.getGameMap().get(closestGrass));
-        // if (grass!=null)
-        // System.out.println(grass.getHealth());
-        //  else System.out.println("grass=null");
         if (isGrassNearby(closestGrass, startPosition))
             reduceGrassHealthRemoveIfDepletedAndAddNewGrassIfNoneLeft(gameMap, BFSGrid, closestGrass);
         else {
@@ -51,8 +43,8 @@ public abstract class Herbivore extends Creature {
             return;
         if (wayToGrass.length - 1 < speed)
             speed = wayToGrass.length - 1;
-        gameMap.getGameMap().put(new Coordinate(startX, startY), new Empty());
-        gameMap.getGameMap().put(wayToGrass[speed], this);
+         gameMap.deleteEntity(new Coordinate(startX, startY));
+         gameMap.putEntity(wayToGrass[speed], this);
     }
 
     public Coordinate[] findWayToGrass(int[][] intMap, Coordinate grass) {
@@ -98,32 +90,18 @@ public abstract class Herbivore extends Creature {
 
     }
 
-    public Coordinate addRandomGrass(GameMap gameMap) {
-        boolean added = false;
-        Coordinate randomCoordinate = null;
-        while (!added) {
-            Random random = new Random();
-            int randomX = random.nextInt(gameMap.getWidth());
-            int randomY = random.nextInt(gameMap.getHeight());
-            randomCoordinate = new Coordinate(randomX, randomY);
-            if (gameMap.getGameMap().get(randomCoordinate) instanceof Empty) {
-                gameMap.getGameMap().put(randomCoordinate, new Grass());
-                added = true;
-            }
-        }
-        return randomCoordinate;
-    }
+
 
 
     public void reduceGrassHealthRemoveIfDepletedAndAddNewGrassIfNoneLeft(GameMap gameMap, int[][] BFSGrid, Coordinate closestGrass) {
-        Entity entity = gameMap.getGameMap().get(closestGrass);
+        Entity entity = gameMap.getEntity(closestGrass);
         Grass grass = (Grass) entity;
         grass.setHealth(grass.getHealth() - 5);
         if (grass.getHealth() <= 0) {
-            gameMap.getGameMap().put(closestGrass, new Empty());
+            gameMap.deleteEntity(closestGrass);
             BFSGrid[closestGrass.getY()][closestGrass.getX()] = -4;
             if (findClosestGrass(BFSGrid) == null) {
-                Coordinate newGrass = addRandomGrass(gameMap);
+                Coordinate newGrass = gameMap.addEntityOnRandomCell(gameMap,new Grass());
                 BFSGrid[newGrass.getY()][newGrass.getX()] = -4;
             }
         }
