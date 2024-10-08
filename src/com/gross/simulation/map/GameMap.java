@@ -26,16 +26,16 @@ public class GameMap {
         gameMap = new HashMap<>(width * height);
     }
 
-    public Coordinate addEntityOnRandomCell(GameMap gameMap, Entity entity) {
+    public Coordinate addEntityOnRandomCell( Entity entity) {
         boolean added = false;
         Coordinate randomCoordinate = null;
         while (!added) {
             Random random = new Random();
-            int randomX = random.nextInt(gameMap.getWidth());
-            int randomY = random.nextInt(gameMap.getHeight());
+            int randomX = random.nextInt(this.getWidth());
+            int randomY = random.nextInt(this.getHeight());
             randomCoordinate = new Coordinate(randomX, randomY);
-            if (!gameMap.hasEntityAt(randomCoordinate)) {
-                gameMap.putEntity(randomCoordinate, entity);
+            if (!this.hasEntityAt(randomCoordinate)) {
+                this.putEntity(randomCoordinate, entity);
                 added = true;
             }
         }

@@ -1,5 +1,6 @@
 package com.gross.simulation.entity.creatures.predators;
 
+import com.gross.simulation.BFS;
 import com.gross.simulation.entity.Coordinate;
 import com.gross.simulation.entity.Entity;
 import com.gross.simulation.entity.creatures.Creature;
@@ -18,16 +19,12 @@ public abstract class Predator extends Creature {
 
     public void makeMove(GameMap gameMap, int startX, int startY) {
         Coordinate startPosition = new Coordinate(startX, startY);
-        // System.out.println(gameMap.getGameMap().get(startPosition).getClass());
-        int[][] BFSGrid = buildBFSGrid(gameMap);
-         //printMap(BFSGrid);
-        calculateDistance(BFSGrid);
-        // printMap(BFSGrid);
+      BFS bfs=new BFS(gameMap);
+        int[][] BFSGrid = bfs.buildBFSGrid(gameMap,this);
+        bfs.calculateDistance(BFSGrid);
+
         Coordinate closestHerbivore = findClosestHerbivore(BFSGrid);
-        // Grass grass=((Grass)gameMap.getGameMap().get(closestGrass));
-        // if (grass!=null)
-        // System.out.println(grass.getHealth());
-        //  else System.out.println("grass=null");
+
         if (isHerbivoreNearby(closestHerbivore, startPosition))
             reduceHerbivoreHealthRemoveIfDepletedAndAddNewHerbivoreIfNoneLeft(gameMap, BFSGrid, closestHerbivore);
         else {
@@ -110,7 +107,7 @@ public abstract class Predator extends Creature {
             BFSGrid[closestHerbivore.getY()][closestHerbivore.getX()] = -4;
             gameMap.deleteEntity(closestHerbivore);
             if (findClosestHerbivore(BFSGrid) == null) {
-                Coordinate coordinate=gameMap.addEntityOnRandomCell(gameMap, gameMap.createRandomHerbivore());
+                Coordinate coordinate=gameMap.addEntityOnRandomCell( gameMap.createRandomHerbivore());
                 BFSGrid[coordinate.getY()][coordinate.getX()] = -4;
             }
         }

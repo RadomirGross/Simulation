@@ -1,5 +1,6 @@
 package com.gross.simulation.entity.creatures.herbivores;
 
+import com.gross.simulation.BFS;
 import com.gross.simulation.entity.Coordinate;
 import com.gross.simulation.entity.Entity;
 import com.gross.simulation.entity.creatures.Creature;
@@ -13,12 +14,16 @@ import java.util.Queue;
 public abstract class Herbivore extends Creature {
     public Herbivore(int health, int speed) {
         super(health, speed);
+
     }
 
     public void makeMove(GameMap gameMap, int startX, int startY) {
         Coordinate startPosition = new Coordinate(startX, startY);
-        int[][] BFSGrid = buildBFSGrid(gameMap);
-        calculateDistance(BFSGrid);
+        BFS bfs = new BFS(gameMap);
+        int[][] BFSGrid = bfs.buildBFSGrid(gameMap,this);
+        printMap(BFSGrid);
+        bfs.calculateDistance(BFSGrid);
+        printMap(BFSGrid);
         Coordinate closestGrass = findClosestGrass(BFSGrid);
         if (isGrassNearby(closestGrass, startPosition))
             reduceGrassHealthRemoveIfDepletedAndAddNewGrassIfNoneLeft(gameMap, BFSGrid, closestGrass);
@@ -48,6 +53,7 @@ public abstract class Herbivore extends Creature {
     }
 
     public Coordinate[] findWayToGrass(int[][] intMap, Coordinate grass) {
+
         if (grass == null)
             return null;
         Coordinate cellNearGrassWithMinValue = findMinimumNeighborValue(intMap, grass);
@@ -101,7 +107,7 @@ public abstract class Herbivore extends Creature {
             gameMap.deleteEntity(closestGrass);
             BFSGrid[closestGrass.getY()][closestGrass.getX()] = -4;
             if (findClosestGrass(BFSGrid) == null) {
-                Coordinate newGrass = gameMap.addEntityOnRandomCell(gameMap,new Grass());
+                Coordinate newGrass = gameMap.addEntityOnRandomCell(new Grass());
                 BFSGrid[newGrass.getY()][newGrass.getX()] = -4;
             }
         }

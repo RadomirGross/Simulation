@@ -28,6 +28,8 @@ public class Simulation {
     public void start() {
         final boolean[] pause = {false};
         final boolean[] running = {true};
+
+
         Thread inputThread = new Thread(new InputHandler(running, pause));
         inputThread.start();
         while (running[0]) {
@@ -35,9 +37,9 @@ public class Simulation {
                 System.out.println("Текущий ход симуляции: " + getCounter());
                 setCounter(getCounter() + 1);
                  renderGameMap();
-                turnActions();
+                 turnActions();
             }
-            slowSimulation(10);  // Задержка между ходами
+            slowSimulation(10 );  // Задержка между ходами
         }
     }
 
@@ -52,8 +54,12 @@ public class Simulation {
                 creature.makeMove(gameMap, coordinate.getX(), coordinate.getY());
             }
         }
+
+
       if (gameMap.checkNumberOfEntities(Herbivore.class)<3)
-          gameMap.addEntityOnRandomCell(gameMap, gameMap.createRandomHerbivore());
+          gameMap.addEntityOnRandomCell(gameMap.createRandomHerbivore());
+      if (gameMap.checkNumberOfEntities(Grass.class)<2)
+            gameMap.addEntityOnRandomCell(new Grass());
     }
 
     public void slowSimulation(int ms) {
@@ -70,8 +76,7 @@ public class Simulation {
                 if(gameMap.hasEntityAt(new Coordinate(x, y)))
                 System.out.print(gameMap.getEntity(new Coordinate(x, y)).getIcon() + " ");
                 else {System.out.print(new Empty().getIcon()+" ");}
-                if(gameMap.getEntity(new Coordinate(x, y))instanceof Empty)
-                    System.out.println("DANGER");
+
             }
             System.out.println();
         }
@@ -79,13 +84,17 @@ public class Simulation {
     }
 
     public void fillGameMap() {
-       gameMap.addEntityOnRandomCell(gameMap, gameMap.createRandomPredator());
-        for (int i = 0; i <6 ; i++)
-            gameMap.addEntityOnRandomCell(gameMap, gameMap.createRandomHerbivore());
-        for (int i = 0; i <10 ; i++)
-            gameMap.addEntityOnRandomCell(gameMap, gameMap.createRandomStaticEntity());
-        for (int i = 0; i < 3; i++) {
-            gameMap.addEntityOnRandomCell(gameMap, new Grass());
+        final int PREDATOR_COUNT=1;
+        final int HERBIVORE_COUNT=10;
+        final int STATIC_ENTITY_COUNT=15;
+        final int GRASS_COUNT=5;
+       gameMap.addEntityOnRandomCell(gameMap.createRandomPredator());
+        for (int i = 0; i <HERBIVORE_COUNT ; i++)
+            gameMap.addEntityOnRandomCell(gameMap.createRandomHerbivore());
+        for (int i = 0; i <STATIC_ENTITY_COUNT ; i++)
+            gameMap.addEntityOnRandomCell( gameMap.createRandomStaticEntity());
+        for (int i = 0; i < GRASS_COUNT; i++) {
+            gameMap.addEntityOnRandomCell( new Grass());
         }
 
             }
