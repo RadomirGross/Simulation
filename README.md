@@ -10,4 +10,4 @@
 положительные числа, это количество шагов, необходимых, для того чтобы занять эту клетку.
 Например:
 
-![Simulation Map](images/Map.png)
+![Simulation Map](src/images/Map.png)
