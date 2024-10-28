@@ -1,5 +1,6 @@
-package com.gross.simulation;
+package com.gross.simulation.search;
 
+import com.gross.simulation.Constants;
 import com.gross.simulation.entity.Coordinate;
 import com.gross.simulation.entity.creatures.Creature;
 import com.gross.simulation.entity.creatures.herbivores.Herbivore;
@@ -72,5 +73,9 @@ public class BFS {
             }
         }
 
-    }}
+    }
+
+
+
+}
 

@@ -1,12 +1,12 @@
 package com.gross.simulation.entity.creatures.herbivores;
 
-import com.gross.simulation.BFS;
+import com.gross.simulation.search.BFS;
 import com.gross.simulation.entity.Coordinate;
 import com.gross.simulation.entity.Entity;
 import com.gross.simulation.entity.creatures.Creature;
-import com.gross.simulation.entity.staticEntity.Empty;
 import com.gross.simulation.entity.staticEntity.Grass;
 import com.gross.simulation.map.GameMap;
+import com.gross.simulation.search.GridPathfinder;
 
 import java.util.LinkedList;
 import java.util.Queue;
@@ -21,14 +21,13 @@ public abstract class Herbivore extends Creature {
         Coordinate startPosition = new Coordinate(startX, startY);
         BFS bfs = new BFS(gameMap);
         int[][] BFSGrid = bfs.buildBFSGrid(gameMap,this);
-        printMap(BFSGrid);
         bfs.calculateDistance(BFSGrid);
-        printMap(BFSGrid);
-        Coordinate closestGrass = findClosestGrass(BFSGrid);
+        GridPathfinder gridPathfinder=new GridPathfinder(BFSGrid);
+        Coordinate closestGrass = gridPathfinder.findClosestFood(this );
         if (isGrassNearby(closestGrass, startPosition))
             reduceGrassHealthRemoveIfDepletedAndAddNewGrassIfNoneLeft(gameMap, BFSGrid, closestGrass);
         else {
-            Coordinate[] wayToGrass = findWayToGrass(BFSGrid, findClosestGrass(BFSGrid));
+            Coordinate[] wayToGrass = findWayToGrass(BFSGrid, gridPathfinder.findClosestFood(this ));
             moveHerbivore(gameMap, wayToGrass, startX, startY, speed);
         }
     }
@@ -53,20 +52,21 @@ public abstract class Herbivore extends Creature {
     }
 
     public Coordinate[] findWayToGrass(int[][] intMap, Coordinate grass) {
-
+        GridPathfinder gridPathfinder=new GridPathfinder(intMap);
         if (grass == null)
             return null;
-        Coordinate cellNearGrassWithMinValue = findMinimumNeighborValue(intMap, grass);
+        Coordinate cellNearGrassWithMinValue = gridPathfinder.findMinimumNeighborValue( grass);
         int grassStartValue = intMap[cellNearGrassWithMinValue.getY()][cellNearGrassWithMinValue.getX()];
         Coordinate[] wayToGrass = new Coordinate[grassStartValue + 1];
         wayToGrass[grassStartValue] = cellNearGrassWithMinValue;
         for (int i = grassStartValue - 1; i >= 1; i--) {
-            wayToGrass[i] = findMinimumNeighborValue(intMap, wayToGrass[i + 1]);
+            wayToGrass[i] = gridPathfinder.findMinimumNeighborValue( wayToGrass[i + 1]);
         }
         return wayToGrass;
     }
 
     public Coordinate findClosestGrass(int[][] intMap) {
+        GridPathfinder gridPathfinder=new GridPathfinder(intMap);
         Queue<Coordinate> queue = new LinkedList<>();
         Coordinate result = null;
         int valueSteps = Integer.MAX_VALUE;
@@ -78,7 +78,7 @@ public abstract class Herbivore extends Creature {
             }
         while (!queue.isEmpty()) {
             Coordinate grass = queue.poll();
-            Coordinate current = findMinimumNeighborValue(intMap, grass);
+            Coordinate current = gridPathfinder.findMinimumNeighborValue( grass);
             if (current != null && intMap[current.getY()][current.getX()] < valueSteps) {
                 result = grass;
                 valueSteps = intMap[current.getY()][current.getX()];
@@ -102,14 +102,15 @@ public abstract class Herbivore extends Creature {
     public void reduceGrassHealthRemoveIfDepletedAndAddNewGrassIfNoneLeft(GameMap gameMap, int[][] BFSGrid, Coordinate closestGrass) {
         Entity entity = gameMap.getEntity(closestGrass);
         Grass grass = (Grass) entity;
+        GridPathfinder gridPathfinder=new GridPathfinder(BFSGrid);
         grass.setHealth(grass.getHealth() - 5);
         if (grass.getHealth() <= 0) {
             gameMap.deleteEntity(closestGrass);
             BFSGrid[closestGrass.getY()][closestGrass.getX()] = -4;
-            if (findClosestGrass(BFSGrid) == null) {
+            /*if (gridPathfinder.findClosestFood(this ) == null) {
                 Coordinate newGrass = gameMap.addEntityOnRandomCell(new Grass());
                 BFSGrid[newGrass.getY()][newGrass.getX()] = -4;
-            }
+            }*/
         }
     }
 

@@ -45,22 +45,6 @@ public Creature(int health,int speed, int power)
         this.speed = speed;
     }
 
-    public Coordinate findMinimumNeighborValue(int[][] intMap, Coordinate grass) {
-        int[][] directions = {{1, 0}, {-1, 0}, {0, 1}, {0, -1}};
-        int minValue = Integer.MAX_VALUE;
-        int width = intMap.length;
-        int height = intMap[0].length;
-        Coordinate result = null;
-        for (int[] direction : directions) {
-            int newX = grass.getX() + direction[0];
-            int newY = grass.getY() + direction[1];
-            if (newX >= 0 && newX < width && newY >= 0 && newY < height)
-                if (intMap[newY][newX] < minValue && intMap[newY][newX] >= 0) {
-                    minValue = intMap[newY][newX];
-                    result = new Coordinate(newX, newY);
-                }
-        }
-        return result;
-    }
+
 
 }

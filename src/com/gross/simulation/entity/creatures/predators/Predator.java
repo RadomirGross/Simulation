@@ -1,11 +1,12 @@
 package com.gross.simulation.entity.creatures.predators;
 
-import com.gross.simulation.BFS;
+import com.gross.simulation.search.BFS;
 import com.gross.simulation.entity.Coordinate;
 import com.gross.simulation.entity.Entity;
 import com.gross.simulation.entity.creatures.Creature;
 import com.gross.simulation.entity.creatures.herbivores.Herbivore;
 import com.gross.simulation.map.GameMap;
+import com.gross.simulation.search.GridPathfinder;
 
 import java.util.LinkedList;
 import java.util.Queue;
@@ -53,19 +54,21 @@ public abstract class Predator extends Creature {
     }
 
     public Coordinate[] findWayToHerbivore(int[][] intMap, Coordinate herbivore) {
+        GridPathfinder gridPathfinder=new GridPathfinder(intMap);
         if (herbivore == null)
             return null;
-        Coordinate cellNearHerbivoreWithMinValue = findMinimumNeighborValue(intMap, herbivore);
+        Coordinate cellNearHerbivoreWithMinValue = gridPathfinder.findMinimumNeighborValue( herbivore);
         int predatorStartValue = intMap[cellNearHerbivoreWithMinValue.getY()][cellNearHerbivoreWithMinValue.getX()];
         Coordinate[] wayToGrass = new Coordinate[predatorStartValue + 1];
         wayToGrass[predatorStartValue] = cellNearHerbivoreWithMinValue;
         for (int i = predatorStartValue - 1; i >= 1; i--) {
-            wayToGrass[i] = findMinimumNeighborValue(intMap, wayToGrass[i + 1]);
+            wayToGrass[i] = gridPathfinder.findMinimumNeighborValue( wayToGrass[i + 1]);
         }
         return wayToGrass;
     }
 
     public Coordinate findClosestHerbivore(int[][] intMap) {
+        GridPathfinder gridPathfinder=new GridPathfinder(intMap);
         Queue<Coordinate> queue = new LinkedList<>();
         Coordinate result = null;
         int valueSteps = Integer.MAX_VALUE;
@@ -77,7 +80,7 @@ public abstract class Predator extends Creature {
             }
         while (!queue.isEmpty()) {
             Coordinate herbivore = queue.poll();
-            Coordinate current = findMinimumNeighborValue(intMap, herbivore);
+            Coordinate current = gridPathfinder.findMinimumNeighborValue( herbivore);
             if (current != null && intMap[current.getY()][current.getX()] < valueSteps) {
                 result = herbivore;
                 valueSteps = intMap[current.getY()][current.getX()];
